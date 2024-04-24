@@ -39,6 +39,10 @@ source=(
   config  # the main kernel config file
   config-chimera # our config that will be merged
 )
+b2sums=('SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP')
 
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
