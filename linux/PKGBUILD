@@ -1,10 +1,10 @@
 # Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 # Maintainer: Joaquín I. Aramendía (samsagax) <samsagaxg@gmail.com>
 
-pkgbase=linux-chimeraos
+pkgbase=linux-chimeraos-apple
 pkgver=6.8.5.chos1
 pkgrel=3
-pkgdesc='Linux ChimeraOS'
+pkgdesc='Linux ChimeraOS - Apple Firmware'
 _srctag=v${pkgver%.*}-${pkgver##*.}
 url="https://github.com/ChimeraOS/linux/commits/$_srctag"
 arch=(x86_64)
