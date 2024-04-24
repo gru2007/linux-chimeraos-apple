@@ -1,10 +1,10 @@
 # Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 # Maintainer: Joaquín I. Aramendía (samsagax) <samsagaxg@gmail.com>
 
-pkgbase=linux-chimeraos
+pkgbase=linux-chimeraos-apple
 pkgver=6.6.0.rc7.chos2
 pkgrel=1
-pkgdesc='Linux ChimeraOS'
+pkgdesc='Linux ChimeraOS - Apple Firmware'
 _srctag=v${pkgver%.*}-${pkgver##*.}
 url="https://github.com/ChimeraOS/linux/commits/$_srctag"
 arch=(x86_64)
@@ -12,6 +12,7 @@ license=(GPL2)
 makedepends=(
   bc
   cpio
+  git
   gettext
   libelf
   pahole
@@ -27,9 +28,13 @@ makedepends=(
   #texlive-latexextra
 )
 options=('!strip')
+conflicts=('apple-gmux-t2-dkms-git')
+replaces=('apple-gmux-t2-dkms-git')
 _srcname=linux-chimeraos
 source=(
   "linux-chimeraos.tar.gz::https://github.com/ChimeraOS/linux/archive/refs/tags/$_srctag.tar.gz"
+  # t2linux Patches
+  patches::git+https://github.com/t2linux/linux-t2-patches
   config  # the main kernel config file
   config-chimera # our config that will be merged
   #HDR patches
@@ -42,9 +47,10 @@ validpgpkeys=(
   A2FF3A36AAA56654109064AB19802F8B0D70FC30  # Jan Alexander Steffens (heftig)
   C7E7849466FE2358343588377258734B41C31549  # David Runge <dvzrv@archlinux.org>
 )
-b2sums=('81d50547e4a3ab37d508841777d38f47819fa7ed6ea6fa07b9a1ec48c1c2bcff1f44c6cf14c34e1753475c92d26fa335e15cc7d94a3b7d536393bac811fa09a7'
-        '262ff13c67dd069d191195374692963ab9258258a9b606eeac48673ec3965590059e204f78714a96e8d9e69034fd10e009b5e8b8b82d987505acd574eb337798'
-        'b1653bee12c29f1d6b183d4365542ed05b4a1309f76e6722dd1cbce784e771979e655e0ceeb0ca89cd230fb62d005de198861f565654588435bc0137d5f10cba')
+b2sums=('SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -65,6 +71,9 @@ prepare() {
   make defconfig
   make -s kernelrelease > version
   make mrproper
+
+  t2linux_patches=$(ls $srcdir/patches | grep -e \.patch$)
+  mv $srcdir/patches/*.patch $srcdir/
 
   local src
   for src in "${source[@]}"; do
