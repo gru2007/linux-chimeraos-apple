@@ -76,7 +76,7 @@ prepare() {
   mv $srcdir/patches/*.patch $srcdir/
 
   local src
-  for src in "${source[@]}"; do
+  for src in "${source[@]}" $t2linux_patches; do
     src="${src%%::*}"
     src="${src##*/}"
     [[ $src = *.patch ]] || continue
@@ -86,6 +86,7 @@ prepare() {
 
   echo "Setting config..."
   cp ../config .config
+  cat $srcdir/patches/extra_config >> .config
   _make olddefconfig
   scripts/kconfig/merge_config.sh -m .config ../config-chimera
   diff -u ../config .config || :
