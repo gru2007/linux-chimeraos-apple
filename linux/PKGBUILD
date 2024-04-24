@@ -67,6 +67,9 @@ prepare() {
   make -s kernelrelease > version
   make mrproper
 
+  t2linux_patches=$(ls $srcdir/patches | grep -e \.patch$)
+  mv $srcdir/patches/*.patch $srcdir/
+
   local src
   for src in "${source[@]}"; do
     src="${src%%::*}"
