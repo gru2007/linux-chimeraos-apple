@@ -1,10 +1,10 @@
 # Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 # Maintainer: Joaquín I. Aramendía (samsagax) <samsagaxg@gmail.com>
 
-pkgbase=linux-chimeraos
+pkgbase=linux-chimeraos-apple
 pkgver=6.8.5.chos3
 pkgrel=1
-pkgdesc='Linux ChimeraOS'
+pkgdesc='Linux ChimeraOS with Apple'
 _srctag=v${pkgver%.*}-${pkgver##*.}
 url="https://github.com/ChimeraOS/linux/commits/$_srctag"
 arch=(x86_64)
@@ -12,6 +12,7 @@ license=(GPL2)
 makedepends=(
   bc
   cpio
+  git
   gettext
   libelf
   pahole
@@ -27,9 +28,13 @@ makedepends=(
   #texlive-latexextra
 )
 options=('!strip')
+conflicts=('apple-gmux-t2-dkms-git')
+replaces=('apple-gmux-t2-dkms-git')
 _srcname=linux-chimeraos
 source=(
   "linux-chimeraos.tar.gz::https://github.com/ChimeraOS/linux/archive/refs/tags/$_srctag.tar.gz"
+    # t2linux Patches
+  patches::git+https://github.com/gru2007/linux-t2-patches
   config  # the main kernel config file
   config-chimera # our config that will be merged
 )
@@ -40,9 +45,10 @@ validpgpkeys=(
   A2FF3A36AAA56654109064AB19802F8B0D70FC30  # Jan Alexander Steffens (heftig)
   C7E7849466FE2358343588377258734B41C31549  # David Runge <dvzrv@archlinux.org>
 )
-b2sums=('393fb5252dcc1960b73b47361cd5f20d0d6ce8b5baeff177bb9550c749fa853fdde7596888db6137e888d7e57d2526f5430f292cea3f32bdc3824a394133014e'
-        '167299818c921749eafeb83327eeddbfe4db9f5659e297d86cfd8ceb6006c504d8dd772f32b0fe13935cb2ed8937324fca122510bf07f107db0b270e2f26906a'
-        '58bc6bdfabecea35a6a2bf86bca55f690bf4c7f6761320cf7b4947f4b3fbea686c0a1fff081eddc72b78e9e9ef39a6664a4090c31b8a5641294f931de582a0e3')
+b2sums=('SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -64,8 +70,11 @@ prepare() {
   make -s kernelrelease > version
   make mrproper
 
+  t2linux_patches=$(ls $srcdir/patches | grep -e \.patch$)
+  mv $srcdir/patches/*.patch $srcdir/
+
   local src
-  for src in "${source[@]}"; do
+  for src in "${source[@]}" $t2linux_patches; do
     src="${src%%::*}"
     src="${src##*/}"
     [[ $src = *.patch ]] || continue
