@@ -2,7 +2,7 @@
 # Maintainer: Joaquín I. Aramendía (samsagax) <samsagaxg@gmail.com>
 
 pkgbase=linux-chimeraos-apple
-pkgver=6.9.4.chos1
+pkgver=6.9.6.chos1
 pkgrel=1
 pkgdesc='Linux ChimeraOS with Apple Support'
 _srctag=v${pkgver%.*}-${pkgver##*.}
