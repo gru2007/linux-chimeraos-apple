@@ -1,17 +1,18 @@
 # Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 # Maintainer: Joaquín I. Aramendía (samsagax) <samsagaxg@gmail.com>
 
-pkgbase=linux-chimeraos
+pkgbase=linux-chimeraos-applet2-RuslanArtemev
 pkgver=6.11.5.chos1
 pkgrel=2
-pkgdesc='Linux ChimeraOS'
+pkgdesc='Linux ChimeraOS with AppleT2 Support'
 _srctag=v${pkgver%.*}-${pkgver##*.}
-url="https://github.com/ChimeraOS/linux/commits/$_srctag"
+url="https://github.com/gru2007/linux-chimeraos-apple/commits/$_srctag"
 arch=(x86_64)
 license=(GPL2)
 makedepends=(
   bc
   cpio
+  git
   gettext
   libelf
   pahole
@@ -27,9 +28,14 @@ makedepends=(
   #texlive-latexextra
 )
 options=('!strip')
+conflicts=('apple-gmux-t2-dkms-git')
+replaces=('apple-gmux-t2-dkms-git')
 _srcname=linux-chimeraos
 source=(
   "linux-chimeraos.tar.gz::https://github.com/ChimeraOS/linux/archive/refs/tags/$_srctag.tar.gz"
+
+  # t2linux Patches
+  patches::git+https://github.com/gru2007/linux-t2-patches
   config  # the main kernel config file
   config-chimera # our config that will be merged
   experiments.patch # experimental kernel patches
@@ -41,12 +47,11 @@ validpgpkeys=(
   A2FF3A36AAA56654109064AB19802F8B0D70FC30  # Jan Alexander Steffens (heftig)
   C7E7849466FE2358343588377258734B41C31549  # David Runge <dvzrv@archlinux.org>
 )
-b2sums=(
-  '51be484d7ac3bf4e20b6e546e4132abdb5f146aa7031edd036a2601b409e3286916eedfc1f021f166e23f3f1e81d991ed9e445a38bd4d15a6946172a8a6ca9ed' # linux-chimeraos.tar.gz
-  '7ad32ef544ac33f08ec4fa7a01c3aa93f7b7b291fdd6d857b857ca035a70af68b5f073bfe0c08a9c211c0f774fc230399bf5f92d9f3da102a6e5676df92e9398' # config
-  '606dbd49bd68cffd01f20b1b70a15bce2460258c0ed6d8aaaa0c1bd3e23c115f30ec1c3327d890ec33b2686dfba57adc1395ca0492270100d9ecc2752fa825e6' # config-chimeraos
-  'SKIP' # experiments.patch
-)
+b2sums=('SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP'
+        'SKIP')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -68,8 +73,11 @@ prepare() {
   make -s kernelrelease > version
   make mrproper
 
+  t2linux_patches=$(ls $srcdir/patches | grep -e \.patch$)
+  mv $srcdir/patches/*.patch $srcdir/
+
   local src
-  for src in "${source[@]}"; do
+  for src in "${source[@]}" $t2linux_patches; do
     src="${src%%::*}"
     src="${src##*/}"
     [[ $src = *.patch ]] || continue
