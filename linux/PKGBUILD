@@ -2,8 +2,8 @@
 # Maintainer: Joaquín I. Aramendía (samsagax) <samsagaxg@gmail.com>
 
 pkgbase=linux-chimeraos-applet2-RuslanArtemev
-pkgver=6.11.5.chos1
-pkgrel=2
+pkgver=6.12.9.chos1
+pkgrel=1
 pkgdesc='Linux ChimeraOS with AppleT2 Support'
 _srctag=v${pkgver%.*}-${pkgver##*.}
 url="https://github.com/gru2007/linux-chimeraos-apple/commits/$_srctag"
